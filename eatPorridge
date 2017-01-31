@@ -1,0 +1,46 @@
+//c# unity goldilocks game file for eating porridge 
+
+using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+
+public class eat_porridge : MonoBehaviour {
+    private int count;
+    public Text score;
+    PlayerHealth playerHealth;
+    public GameObject player;
+	// Use this for initialization
+	void Start () {
+        count = 0;
+        score.text = "Score: " + count.ToString();
+        playerHealth = player.GetComponent<PlayerHealth>();
+        
+    }
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+    void OnTriggerEnter(Collider bad)
+    {
+        if (bad.gameObject.tag == "badFood")
+        {
+            Destroy(bad.gameObject);
+            if (playerHealth.currentHealth > 0)
+                playerHealth.TakeDamage(10);
+        }
+        if(bad.gameObject.tag == "bear")
+        {
+            if (playerHealth.currentHealth > 0)
+                playerHealth.TakeDamage(25);
+        }
+        if (bad.gameObject.tag == "goodFood")
+        {
+            Destroy(bad.gameObject);
+            playerHealth.HealDamage(2);
+            count += 15;
+            score.text = "Score: " + count.ToString();
+        }
+    }
+
+}
