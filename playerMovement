@@ -1,0 +1,55 @@
+// for my goldilocks game this file controlled goldilocks' movement
+// created by Michael Lovell
+// fall of 2016
+
+using UnityEngine;
+using System.Collections;
+
+public class PlayerRun : MonoBehaviour {
+	public float speed = 10f;
+	private CharacterController controller;
+	Animator animator;
+    bool stopped = false;
+	//public Rigidbody rb;
+	// Use this for initialization
+	void Start () {
+		controller = GetComponent <CharacterController> ();
+		animator = GetComponent<Animator> ();
+		//rb = GetComponent <Rigidbody> ();
+	}
+	
+	// Update is called once per frame
+	void FixedUpdate () {
+        if (!stopped)
+        {
+            animator.SetTrigger("run");
+            controller.Move(-Vector3.forward * speed * Time.deltaTime);
+            if (transform.position.z == -250)
+                transform.position = new Vector3(0, 1, -251);
+            //rb.MovePosition(transform.position + transform.forward * speed * Time.deltaTime );
+        }
+	}
+	void Update(){
+		if (Input.GetKey (KeyCode.RightArrow)) {
+			controller.Move(-Vector3.right * speed * Time.deltaTime);
+			//rb.MovePosition (transform.position + transform.right * speed * Time.deltaTime);
+		
+		}
+		if (Input.GetKey (KeyCode.LeftArrow))
+			controller.Move (-Vector3.left * speed * Time.deltaTime);
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            animator.SetTrigger("jump");
+            stopped = false;
+            
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            animator.SetTrigger("stop");
+            stopped = true;
+        }
+
+      if(stopped == false)
+            animator.SetTrigger("run");
+	}
+}
