@@ -1,0 +1,51 @@
+// for my unity goldilocks game this file instantiates chairs
+// created by Michael Lovell
+// fall of 2016
+
+using UnityEngine;
+using System.Collections;
+
+public class createChairs : MonoBehaviour {
+    public GameObject[] leftChairs;
+    public GameObject[] rightChairs;
+    Vector3 firstSpawnPosition = new Vector3(15, 1.2f, -310);
+    Vector3 secondSpawnPosition = new Vector3(-15, 1.2f, -317);
+    Vector3 thirdSpawnPosition = new Vector3(15, 1.2f, -324);
+    Vector3 fourthSpawnPosition = new Vector3(-15, 1.2f, -331);
+    Vector3 fifthSpawnPosition = new Vector3(15, 1.2f, -338);
+    Vector3 sixthSpawnPosition = new Vector3(-15, 1.2f, -345);
+    Vector3 seventhSpawnPosition = new Vector3(15, 1.2f, -352);
+    Quaternion leftSpawnRotation = Quaternion.Euler(0,90,0);
+    Quaternion rightSpawnRotation = Quaternion.Euler(0, -90, 0);
+    public float spawnWait;
+    // Use this for initialization
+    void Start() {
+        StartCoroutine(SpawnWaves());
+    }
+
+    // Update is called once per frame
+    IEnumerator SpawnWaves() {
+        while (true) {
+        GameObject rightChair = rightChairs[Random.Range(0, rightChairs.Length)];
+        GameObject leftChair = leftChairs[Random.Range(0, leftChairs.Length)];
+        Instantiate(leftChair, secondSpawnPosition, leftSpawnRotation);
+        Instantiate(rightChair, firstSpawnPosition, rightSpawnRotation);
+
+        rightChair = rightChairs[Random.Range(0, rightChairs.Length)];
+        leftChair = leftChairs[Random.Range(0, leftChairs.Length)];
+        Instantiate(leftChair, fourthSpawnPosition, leftSpawnRotation);
+        Instantiate(rightChair, thirdSpawnPosition, rightSpawnRotation);
+
+        //continue to fill in here
+        rightChair = rightChairs[Random.Range(0, rightChairs.Length)];
+        leftChair = leftChairs[Random.Range(0, leftChairs.Length)];
+        Instantiate(leftChair, sixthSpawnPosition, leftSpawnRotation);
+        Instantiate(rightChair, fifthSpawnPosition, rightSpawnRotation);
+
+        rightChair = rightChairs[Random.Range(0, rightChairs.Length)];
+        Instantiate(leftChair, seventhSpawnPosition, rightSpawnRotation);
+
+        yield return new WaitForSeconds(spawnWait);
+    }
+}
+}
