@@ -1,0 +1,26 @@
+//for my goldilocks game this file opened the door between the kitchen and the livingroom by destroying the kitchen door when goldilocks got close to it
+// created by Michael Lovell
+fall 2016
+
+using UnityEngine;
+using System.Collections;
+
+public class openDoor : MonoBehaviour {
+    public GameObject door;
+    public GameObject player;
+	// Use this for initialization
+	void Start () {
+       door = GameObject.FindGameObjectWithTag("door");
+      
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "door")
+            Destroy(other.gameObject);
+    }
+    }
