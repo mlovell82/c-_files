@@ -1,0 +1,33 @@
+for my pacman game this file controlled pacman's power-up instantiations
+created by Michael Lovell
+fall 2016
+
+using UnityEngine;
+using System.Collections;
+
+
+public class PowerUp : MonoBehaviour {
+    public GameObject powerUp;
+    public float spawnTime = 5f;
+    public Transform[] spawnPoints;
+    public GameObject other;
+    PacmanMove target;
+    Animator anim;
+    // Use this for initialization
+    void Start () {
+        target = other.GetComponent<PacmanMove>();
+        InvokeRepeating("Spawn", spawnTime, spawnTime); 
+
+	}
+	
+	// Update is called once per frame
+	void Spawn()
+    {
+        if (target.W <= 0 || target.pacDotTotal <= 0)
+        {
+            return;
+        }
+        int spawnPointIndex = Random.Range(0, spawnPoints.Length);
+        Instantiate(powerUp, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
+    }
+}
