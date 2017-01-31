@@ -1,0 +1,19 @@
+// for my goldilocks game this file applied force on the chairs to move them accross the room
+// created by Michael Lovell
+fall 2016
+
+using UnityEngine;
+using System.Collections;
+
+public class chairLeft: MonoBehaviour {
+    public Rigidbody rb;
+	// Use this for initialization
+	void Start() {
+        rb = GetComponent<Rigidbody>();
+	}
+	
+	// Update is called once per frame
+	void FixedUpdate () {
+        rb.AddForce(transform.forward * 5);
+	}
+}
