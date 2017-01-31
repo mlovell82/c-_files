@@ -1,0 +1,67 @@
+// for my goldilocks game this file instantiated the bowls of porridge on the kitchen table
+// created by Michael Lovell
+// fall 2016
+
+using UnityEngine;
+using System.Collections;
+
+public class PorridgeDistribute : MonoBehaviour {
+    public Transform hotPorridge;
+    public Transform coldPorridge;
+    public Transform goodPorridge;
+    public Transform dancingPlate;
+   
+	// Use this for initialization
+	void Start () {
+        for (int i = 0; i < 12; ++i)
+        {
+
+            spawnHot();
+        }
+
+            
+        for (int i = 0; i < 12; ++i)
+        {
+
+            spawnCold();
+        }
+            
+        for (int i = 0; i < 50; ++i)
+        {
+            spawnJustRight();
+        }
+        for(int i = 0; i < 10; ++i)
+        {
+            spawnDancingPlate();
+        }
+            
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+    void spawnHot()
+    {
+        Vector3 pos = new Vector3(Random.Range(-4, 4), 4, Random.Range(-240, 240));
+        Instantiate(hotPorridge, pos, Quaternion.identity);
+    }
+    void spawnCold()
+    {
+        Vector3 pos = new Vector3(Random.Range(-4, 4), 4, Random.Range(-240, 240));
+        Instantiate(coldPorridge, pos, Quaternion.identity);
+    }
+    void spawnJustRight()
+    {
+      
+            Vector3 pos = new Vector3(Random.Range(-4, 4), 4, Random.Range(-240, 240));
+            Instantiate(goodPorridge, pos, Quaternion.identity);
+
+    }
+    void spawnDancingPlate()
+    {
+        Vector3 pos = new Vector3(Random.Range(-3, 3), 5, Random.Range(-240, 220));
+        Instantiate(dancingPlate, pos, Quaternion.identity);
+    }
+    
+}
