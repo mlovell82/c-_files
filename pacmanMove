@@ -1,0 +1,183 @@
+// for my pacman game this file controlled pacman's movement and interactions with his environment
+// created by Michael Lovell
+// fall 2016
+
+using UnityEngine;
+using System.Collections;
+
+public class PacmanMove : MonoBehaviour {
+    public int x = 10, y, z = 60, W, score = 0, ghostPoints = 0, pacDotTotal;
+	public float speed = 0.4f, blue = 10f;
+	Vector2 dest = Vector2.zero;
+    Vector2 startPos;
+	bool dead = false;
+	Animator anim;
+	Animator blinkyAnim, pinkyAnim, inkyAnim, clydeAnim;
+	int totalSec = 0;
+    bool eating = false;
+    public GameObject pacmanClone;
+    GameObject pacman;
+    Animator canvasAnim;
+    public GameObject powerUp;
+    public float spawnTime = 5f;
+    public Transform[] spawnPoints;
+    
+   
+    
+    // Use this for initialization
+    void Start () {
+        pacman = GameObject.FindGameObjectWithTag("pacman");
+        W = 3;
+        pacDotTotal = 241;
+        dest = transform.position;
+        startPos = new Vector2(3.89f,-2.42f);
+		GetComponent<Animator> ().SetBool ("isMoving", false);
+		//GetComponent<Animator>().SetBool("die", false);
+		anim = GetComponent<Animator> ();
+		anim.SetBool ("isDead", false);
+        GameObject canvas = GameObject.FindGameObjectWithTag("canvas");
+        canvasAnim = canvas.GetComponent<Animator>();
+		GameObject blinky = GameObject.FindGameObjectWithTag("blinky");
+		GameObject pinky = GameObject.FindGameObjectWithTag ("pinky");
+		GameObject inky = GameObject.FindGameObjectWithTag ("inky");
+		GameObject clyde = GameObject.FindGameObjectWithTag ("clyde");
+
+        
+        InvokeRepeating("Spawn", spawnTime, spawnTime);
+
+        blinkyAnim = blinky.GetComponent<Animator> ();
+		pinkyAnim = pinky.GetComponent<Animator> ();
+		inkyAnim = inky.GetComponent<Animator> ();
+		clydeAnim = clyde.GetComponent<Animator> ();
+	}
+	
+	// Update is called once per frame
+	void FixedUpdate () {
+        if (eating)
+            ghostPoints = ghostCounter() * z;
+        else
+            ghostPoints = 0;
+        if(dead && W > 0)
+        {           
+            anim.SetBool("isDead", false);
+            anim.SetBool("isMoving", false);
+            dead = false;
+            pacman = Instantiate(pacmanClone, new Vector2(3.89f,-2.42f), Quaternion.identity) as GameObject;
+            transform.position = new Vector2(3.89f, -2.42f);
+        }
+        if(pacDotTotal <= 0 || W <= 0)
+        {
+            canvasAnim.SetTrigger("GameOver");
+        }
+		if (!dead) {
+			Vector2 p = Vector2.MoveTowards (transform.position, dest, speed);
+			GetComponent<Rigidbody2D> ().MovePosition (p);
+			GetComponent<Animator> ().SetBool ("isMoving", false);
+			if ((Vector2)transform.position == dest) {
+				if (Input.GetKey (KeyCode.UpArrow) && valid (Vector2.up)) {
+					dest = (Vector2)transform.position + Vector2.up;
+					GetComponent<Animator> ().SetBool ("isMoving", true);
+				}
+				if (Input.GetKey (KeyCode.RightArrow) && valid (Vector2.right)) {
+					dest = (Vector2)transform.position + Vector2.right;
+					GetComponent<Animator> ().SetBool ("isMoving", true);
+				}
+				if (Input.GetKey (KeyCode.DownArrow) && valid (-Vector2.up)) {
+					dest = (Vector2)transform.position - Vector2.up;
+					GetComponent<Animator> ().SetBool ("isMoving", true);
+				}
+				if (Input.GetKey (KeyCode.LeftArrow) && valid (-Vector2.right)) {
+					dest = (Vector2)transform.position - Vector2.right;
+					GetComponent<Animator> ().SetBool ("isMoving", true);
+				}
+			}
+		} 
+
+		Vector2 dir = dest - (Vector2)transform.position;
+		GetComponent<Animator> ().SetFloat ("DirX", dir.x);
+		GetComponent<Animator> ().SetFloat ("DirY", dir.y);
+	}
+	bool valid(Vector2 dir){
+		Vector2 pos = transform.position;
+		RaycastHit2D hit = Physics2D.Linecast (pos + dir, pos);
+		return(hit.collider == GetComponent<Collider2D> ());
+	}
+	void OnTriggerEnter2D(Collider2D col){
+		if (col.gameObject.CompareTag ("Power")) {
+			Destroy (col.gameObject);
+            if (blinkyAnim != null)
+                blinkyAnim.SetBool("eatible1_7", true);
+            if (pinkyAnim != null)
+                pinkyAnim.SetBool("eatible1_7", true);
+            if (inkyAnim != null)
+                inkyAnim.SetBool("eatible1_7", true);
+            if (clydeAnim != null)
+                clydeAnim.SetBool("eatible1_7", true);
+            eating = true;
+            StartCoroutine (whiteInvoke ());
+
+			//timerStart = true;	
+
+		}
+        if (col.gameObject.CompareTag("Pacdot"))
+        {
+            score = score + x;
+            pacDotTotal = pacDotTotal - 1;
+            Destroy(col.gameObject);
+        }
+	}
+	public IEnumerator whiteInvoke(){
+		
+		yield return new WaitForSeconds (7f);
+		if (blinkyAnim != null) {
+			blinkyAnim.SetBool ("eatible1_7", false);
+			blinkyAnim.SetBool ("eatible7_10", true);
+		} 
+		if (pinkyAnim != null) {
+			pinkyAnim.SetBool ("eatible1_7", false);
+			pinkyAnim.SetBool ("eatible7_10", true);
+		
+        }
+		if (inkyAnim != null) {
+			inkyAnim.SetBool ("eatible1_7", false);
+			inkyAnim.SetBool ("eatible7_10", true);
+		}
+		if (clydeAnim != null) {
+			clydeAnim.SetBool ("eatible1_7", false);
+			clydeAnim.SetBool ("eatible7_10", true);
+		}
+
+		yield return new WaitForSeconds(3f);
+		if(blinkyAnim != null)
+			blinkyAnim.SetBool ("eatible7_10", false);
+		if(pinkyAnim != null)
+			pinkyAnim.SetBool ("eatible7_10", false);
+		if(inkyAnim != null)
+			inkyAnim.SetBool ("eatible7_10", false);
+		if(clydeAnim != null)
+			clydeAnim.SetBool ("eatible7_10", false);
+        eating = false;
+		}
+    int ghostCounter()
+    {
+        int tally = 0;
+        if (pinkyAnim == null)
+            ++tally;
+        if (blinkyAnim == null)
+            ++tally;
+        if (inkyAnim == null)
+            ++tally;
+        if (clydeAnim == null)
+            ++tally;
+        return tally;
+    }
+    void Spawn()
+    {
+        if (W <= 0 || pacDotTotal <= 0)
+        {
+            return;
+        }
+        int spawnPointIndex = Random.Range(0, spawnPoints.Length);
+        Instantiate(powerUp, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
+    }
+}
