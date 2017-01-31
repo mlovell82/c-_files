@@ -1,0 +1,82 @@
+for my pacman game this file controled ghost movement
+created by Michael Lovell
+fall 2016
+
+using UnityEngine;
+using System.Collections;
+
+public class GhostMove : MonoBehaviour {
+	public GameObject other;
+    Transform targetObj;
+	Animator anim;
+	Animator ghostAnim;
+	public Transform[] waypoints;
+	public Transform[] staypoints;
+	bool pacmanLives = true;
+	float deathWait = 3.0f;
+	int cur = 0;
+	bool pacFood, isDead;
+   public int ghostValue = 0, scoreB = 0;
+    PacmanMove targetScript;
+    public float speed = .1f;
+    // Use this for initialization
+    void Start () {
+		ghostAnim = GetComponent<Animator> ();
+		ghostAnim.SetBool ("eatible1_7", false);
+		ghostAnim.SetBool ("eatible7_10", false);
+		isDead = false;
+        targetScript = other.GetComponent<PacmanMove>();
+	}
+	
+	// Update is called once per frame
+	void FixedUpdate () {
+        if (targetScript.W > 0)
+            pacmanLives = true;
+        ghostValue = targetScript.ghostPoints;
+		//if ((waypoints[0] != null) && (!isDead)) {
+			//Vector2 dir = waypoints [cur].position - transform.position;
+			//GetComponent<Animator> ().SetFloat ("DirX", dir.x);
+			//GetComponent<Animator> ().SetFloat ("DirY", dir.y);
+		//}
+		if (!isDead) {
+			if ((ghostAnim.GetBool ("eatible1_7")) || (ghostAnim.GetBool ("eatible7_10")))
+				pacFood = true;
+			else
+				pacFood = false;
+		}
+       
+            if (transform.position != waypoints[cur].position)
+            {
+                Vector2 p = Vector2.MoveTowards(transform.position, waypoints[cur].position, speed);
+                GetComponent<Rigidbody2D>().MovePosition(p);
+            }
+            else
+                cur = (cur + 1) % waypoints.Length;
+       
+       // if (pacFood)
+       // {
+        //    Vector2 p = Vector2.MoveTowards(transform.position, -other.transform.position, speed);
+        //    GetComponent<Rigidbody2D>().MovePosition(p);
+      //  }
+
+	}
+	void OnTriggerEnter2D(Collider2D co){
+		if (co.name == "pacman") {
+			if (pacFood != true) {
+				pacmanLives = false;
+				anim = co.GetComponent<Animator> ();
+				anim.SetBool ("isDead", true);
+				anim.SetTrigger ("die");
+				waypoints = staypoints;
+                targetScript.W -= 1;
+				//Destroy (co.gameObject, deathWait);
+			}
+	
+			if (pacFood == true) {
+                targetScript.score = targetScript.score + ghostValue;
+				Destroy (gameObject);
+				isDead = true;
+			}
+		}
+	}
+}
