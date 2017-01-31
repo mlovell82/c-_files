@@ -1,0 +1,20 @@
+// for my pacman game this file operated a scoreboard
+// created by Michael Lovell
+fall 2016
+
+using UnityEngine;
+using System.Collections;
+
+public class ScoreBoard : MonoBehaviour {
+    PacmanMove targetScript;
+    public GameObject other;
+    // Use this for initialization
+    void Start () {
+        targetScript = other.GetComponent<PacmanMove>();
+    }
+	
+	// Update is called once per frame
+	void FixedUpdate () {
+       // GetComponent<TextMesh>().text = "Score: " + targetScript.score;
+	}
+}
