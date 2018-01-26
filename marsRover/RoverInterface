@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MickMarsRover
+{
+    class RoverInterface{
+        RoverLauncher _theRoverLauncher = new RoverLauncher();
+        Grid _theGrid = new Grid();
+
+        public void roverLaunchingInterface(){
+            Console.WriteLine("Now you can deploy rovers by entering 2 integers and a character representing the direction. \nSeparate each with a space. Then hit \"Enter\".  Once deployed you can move the rover by typing \n\"M\" for forward, \"R\" to turn right, and \"L\" to turn left.  Then press \"Enter\".  Just hit \"Enter\" \na second time to receive an update of where all the deployed rovers are and the direction they \nare facing.");
+            Console.WriteLine("Example deploy command:  2 3 N");
+            Console.WriteLine("Example movement command: MMRRML");
+
+            var inputLine = "empty";
+      
+            while (inputLine != null){                
+                inputLine = Console.ReadLine();
+                if (inputLine == ""){
+                    outputResult();
+                    Console.WriteLine("==========");
+                }
+                else{
+                    parseRoverLaunchingInterface(inputLine);
+                }
+            }
+        }
+
+        public void gridInterface(){
+            Console.WriteLine("Please enter the grid size with 2 integers divide by a space like \"4 5\":");
+            var gridDimensionsEntry = Console.ReadLine();
+            var xAxis = "empty";
+            var yAxis = "empty";
+            var xStringDone = false;
+
+            foreach (var digit in gridDimensionsEntry){
+                if (digit == ' '){
+                    xStringDone = true;
+                }
+                if (!xStringDone){
+                    if (xAxis == "empty"){
+                        xAxis = digit.ToString();
+                    }
+                    else{
+                        xAxis = xAxis + digit;
+                    }
+
+                }
+                if (xStringDone){
+                    if (yAxis == "empty"){
+                        yAxis = digit.ToString();
+                    }
+                    else{
+                        yAxis = yAxis + digit;
+                    }
+                }
+
+            }
+            if (RoverLauncher.inputIsValidInteger(xAxis, yAxis)){
+                _theGrid.setGridDimensions(Int32.Parse(xAxis), Int32.Parse(yAxis));
+            }
+            else{
+                Console.WriteLine("valid entries for grid dimensions are integers, an example would be 4 3:");
+            }
+        }
+
+        public void parseRoverLaunchingInterface(string entry){
+            
+            if (entry[0] != 'M' && entry[0] != 'R' && entry[0] != 'L'){
+                _theRoverLauncher.deploy(entry);
+            }
+            else{
+                _theRoverLauncher.locationChanger(entry);
+            }
+        }
+
+        public void outputResult(){
+            var roverList = _theRoverLauncher.getRoverList();
+            var roverCounter = 1;
+            foreach (Rover singleRover in roverList){
+                Console.WriteLine("Rover " + roverCounter + ": " + singleRover.getX() + " " + singleRover.getY() + " " + singleRover.getOrientation());
+                ++roverCounter;
+            }
+        }
+    }
+}
